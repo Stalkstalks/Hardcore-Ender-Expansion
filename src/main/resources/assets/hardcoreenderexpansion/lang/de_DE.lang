@@ -260,16 +260,11 @@ container.experienceTable=Experience Table
 container.accumulationTable=Accumulation Table
 container.extractionTable=Extraction Table
 container.endPowderEnhancements.bacon=Bacon Powder Enhancements
-container.transportBeacon=
-Transport Leuchtfeuer
-container.transportBeacon.bacon=
-Transport Leuchtfeuer
-container.transportBeacon.error.dimension=
-Falsche Dimension
-container.transportBeacon.error.tamper=
-Manipulationen erkannt
-container.transportBeacon.error.nodestination=
-Kein Ziel ausgewählt
+container.transportBeacon=Transport Leuchtfeuer
+container.transportBeacon.bacon=Transport Leuchtfeuer
+container.transportBeacon.error.dimension=Falsche Dimension
+container.transportBeacon.error.tamper=Manipulationen erkannt
+container.transportBeacon.error.nodestination=Kein Ziel ausgewählt
 container.transportBeacon.error.noenergy=Keine Energie
 container.button.travel=Resisen
 key.openCompendium.bacon=Leuchtfeuer Kompendium
@@ -357,3 +352,8 @@ item.sacredWand.core.repulsion=Repulsion Wand Core
 item.charm.witcherydefense.tooltip=
 item.charm.voidrescue.tooltip=
 achievement.voidChest.notification=You have new items in your Void Chest
+tile.flowerPot.name=Blumentopf
+tile.biomeIslandCore.name=Biominselkern
+tile.brewingStand.name=Verbesserter Braustand
+tile.templeEndPortal.name=Endportal
+tile.laserBeam.name=Laserstrahl
