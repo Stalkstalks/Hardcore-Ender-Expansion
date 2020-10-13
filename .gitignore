@@ -9,3 +9,7 @@ run/
 .DS_Store
 Thumbs.db
 Mod Update Process.txt
+*.bat
+HEE1.iml
+HEE1.ipr
+HEE1.iws
