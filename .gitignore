@@ -1,15 +1,17 @@
-bin/
-build/
-eclipse/
-run/
-.gradle/
-.settings/
+# Eclipse
 .classpath
 .project
-.DS_Store
-Thumbs.db
-Mod Update Process.txt
-*.bat
-HEE1.iml
-HEE1.ipr
-HEE1.iws
+.settings/
+bin/
+eclipse/
+
+# Project
+.gradle/
+run/
+build/
+
+# IDEA
+*.iml
+*.ipr
+*.iws
+out/
