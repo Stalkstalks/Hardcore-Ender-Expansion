@@ -13,7 +13,7 @@ Hi, no problem at all, just change the version number to something
 like "1.x.x GTNH Edition" and use the HEE1-1.7.10 branch (master
 branch was for HEE 2 but that has since moved to its own repo).
 
-2020-10-12 12:12 GMT+02:00, Dream Master <Dream-Master@gmx.net>:
+2020-10-12 12:12 GMT+02:00, Dream Master:
 > Hi chylex,
 >
 >
@@ -96,21 +96,8 @@ Once you cloned the repository, follow this tutorial on how to install Forge: ht
 
 When you download Forge, do not copy the *src* folder and *build.gradle* file, as those are provided by the mod's repository, otherwise your setup will not work.
 
-## Issue & task tracker
+## Issue tracker
 
-This project also contains an issue tracker for the mod, which you should use for ideas, questions and bug reports.
+Please report any bugs/issues to the [GTNH Github](https://github.com/GTNewHorizons/GT-New-Horizons-Modpack/issues).
 
 Always provide as much information and details as possible. If you're reporting a bug or a crash, always **provide logs** (both crash and client/server log) and conditions under which the bug or crash happened!
-
-Resolved issues will have a resolution in square brackets, optionally with HEE version.
-
-* **[DONE]** Finished feature, enhancement or tweak.
-* **[FIXED]** Resolved bug or crash.
-* **[INVALID]** Not enough information to replicate the issue, or the issue is not caused by HEE.
-* **[INTENDED]** Described behavior is intended and correct.
-* **[CANCELED]** Canceled feature, enhancement or tweak.
-* **[ANSWERED]** Question answered.
-* **[ACKNOWLEDGED]** Feedback read and acknowledged.
-* **[DUPLICATE]** Reported issue is a duplicate and will be locked.
-
-Visit the issue tracker here: https://github.com/chylex/Hardcore-Ender-Expansion/issues
