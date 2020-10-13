@@ -7,6 +7,55 @@ DO NOT MODIFY THE LANGUAGE FILES, THEY WILL GET AUTOMATICALLY REPLACED BY THE TR
 
 Use http://hee-translate.chylex.com/ for translations instead.
 
+## Permission to use own HHE Fork
+
+Hi, no problem at all, just change the version number to something
+like "1.x.x GTNH Edition" and use the HEE1-1.7.10 branch (master
+branch was for HEE 2 but that has since moved to its own repo).
+
+2020-10-12 12:12 GMT+02:00, Dream Master <Dream-Master@gmx.net>:
+> Hi chylex,
+>
+>
+>
+>
+>
+> I am DreamMasterXXL the Pack creator from GT New Horizons a Modpack for MC
+> 1.7.10 developed since 2014.
+>
+> I like to ask you if we are allowed to use the Hardcore Ender Expansion fork
+> and doing bug fixes or minor changes on our own.
+>
+> We are a large community already Discord 6k Members and running the pack on
+> 4 Servers. There are many partners running the pack also in USA, Europe,
+> Russia and China.
+>
+> Since MC 1.7.10 support is very rare we take over most mods to us GTNH
+> Github.
+>
+>
+>
+> Discord:https://discord.gg/EXshrPV
+>
+> Webpage: https://www.gtnewhorizons.com/
+>
+> Pack on
+> Twitch: https://www.curseforge.com/minecraft/modpacks/gt-new-horizons
+>
+> Pack on Technic:https://www.technicpack.net/modpack/mcnewhorizons.677387/
+>
+> Github Organisation:https://github.com/GTNewHorizons
+>
+>
+>
+> I hope i can get permission from you to do so.
+>
+>
+>
+> Thanks in advance
+>
+> DreamMasterXXL
+
 ## Source code and asset license
 
 The project is under the All Rights Reserved license, which means that redistribution is forbidden. However, I do not want to be as restrictive, so here are some general rules, and some specific cases for what you may want to do with the source.
