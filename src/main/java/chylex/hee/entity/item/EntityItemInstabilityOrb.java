@@ -70,11 +70,11 @@ public class EntityItemInstabilityOrb extends EntityItem{
 	
 	private void detonate(){
 		if (rand.nextInt(6) == 0){
-			ExplosionOrb explosion = new ExplosionOrb(worldObj,this,posX,posY,posZ,2.8F+rand.nextFloat()*0.8F);
+			ExplosionOrb explosion = new ExplosionOrb(worldObj,this,posX,posY,posZ,0.1F);
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
 			PacketPipeline.sendToAllAround(this,64D,new C21EffectEntity(FXType.Entity.ORB_EXPLOSION,posX,posY,posZ,0F,explosion.explosionSize));
-		}
+		}/*
 		else if (rand.nextInt(6) == 0){
 			Class<?> cls = null;
 			int ele = rand.nextInt(OrbSpawnableMobs.classList.size());
@@ -121,7 +121,7 @@ public class EntityItemInstabilityOrb extends EntityItem{
 			worldObj.spawnEntityInWorld(entityitem);
 			
 			PacketPipeline.sendToAllAround(this,64D,new C21EffectEntity(FXType.Entity.ORB_TRANSFORMATION,posX,posY,posZ,0.25F,0.4F));
-		}
+		}*/
 		
 		setDead();
 	}
