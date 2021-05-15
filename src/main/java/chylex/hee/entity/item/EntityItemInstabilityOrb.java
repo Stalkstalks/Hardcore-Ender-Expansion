@@ -1,7 +1,7 @@
 package chylex.hee.entity.item;
+
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.block.Block;
@@ -23,12 +23,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
 import chylex.hee.HardcoreEnderExpansion;
 import chylex.hee.entity.fx.FXType;
-import chylex.hee.mechanics.orb.OrbAcquirableItems;
-import chylex.hee.mechanics.orb.OrbSpawnableMobs;
 import chylex.hee.mechanics.orb.WeightedItem;
 import chylex.hee.packets.PacketPipeline;
 import chylex.hee.packets.client.C21EffectEntity;
-import chylex.hee.system.logging.Log;
 import chylex.hee.system.util.BlockPosM;
 
 public class EntityItemInstabilityOrb extends EntityItem{
@@ -68,52 +65,30 @@ public class EntityItemInstabilityOrb extends EntityItem{
 		}
 	}
 	
-	private void detonate(){
-		if (rand.nextInt(6) == 0){
+	private void detonate() {
+		if (rand.nextInt(6) == 0) {
 			ExplosionOrb explosion = new ExplosionOrb(worldObj,this,posX,posY,posZ,0.1F);
 			explosion.doExplosionA();
 			explosion.doExplosionB(true);
 			PacketPipeline.sendToAllAround(this,64D,new C21EffectEntity(FXType.Entity.ORB_EXPLOSION,posX,posY,posZ,0F,explosion.explosionSize));
-		}/*
-		else if (rand.nextInt(6) == 0){
-			Class<?> cls = null;
-			int ele = rand.nextInt(OrbSpawnableMobs.classList.size());
-			Iterator<Class<?>> iter = OrbSpawnableMobs.classList.iterator();
-			
-			while(iter.hasNext()){
-				cls = iter.next();
-				if (--ele < 0)break;
-			}
-			
-			try{
-				Entity e = (Entity)cls.getConstructor(World.class).newInstance(worldObj);
-				e.setPositionAndRotation(posX,posY,posZ,rand.nextFloat()*360F-180F,0F);
-				worldObj.spawnEntityInWorld(e);
-				
-				PacketPipeline.sendToAllAround(this,64D,new C21EffectEntity(FXType.Entity.ORB_TRANSFORMATION,e));
-			}catch(Exception ex){
-				Log.throwable(ex,"Error spawning entity $0 in EntityItemInstabilityOrb",cls == null ? "<null>" : cls.getSimpleName());
-			}
-		}
-		else{
-			WeightedItem item = OrbAcquirableItems.getRandomItem(worldObj,rand);
-			
-			if (item == null){ // list is empty
-				String[] list = new String[]{
+		} else {
+			WeightedItem item = null;
+			String[] list = new String[]{
 					ChestGenHooks.DUNGEON_CHEST, ChestGenHooks.BONUS_CHEST, ChestGenHooks.MINESHAFT_CORRIDOR,
 					ChestGenHooks.VILLAGE_BLACKSMITH, ChestGenHooks.PYRAMID_DESERT_CHEST, ChestGenHooks.PYRAMID_JUNGLE_CHEST,
-					ChestGenHooks.STRONGHOLD_LIBRARY, ChestGenHooks.STRONGHOLD_CORRIDOR
-				};
+					ChestGenHooks.STRONGHOLD_LIBRARY, ChestGenHooks.STRONGHOLD_CORRIDOR					
+			};
 				
-				WeightedRandomChestContent[] content = ChestGenHooks.getItems(list[rand.nextInt(list.length)],rand);
-				if (content.length == 0)return;
+			WeightedRandomChestContent[] content = ChestGenHooks.getItems(list[rand.nextInt(list.length)],rand);
+			if (content.length == 0)
+				return;
 				
-				ItemStack is = content[rand.nextInt(content.length)].theItemId;
-				item = new WeightedItem(is.getItem(),is.getItemDamage(),1);
-			}
-			
+			ItemStack is = content[rand.nextInt(content.length)].theItemId;
+			item = new WeightedItem(is.getItem(),is.getItemDamage(),1);				
+				
 			int meta = item.getDamageValues()[rand.nextInt(item.getDamageValues().length)];
-			if (meta == 32767)meta = 0;
+			if (meta == 32767)
+				meta = 0;
 			
 			EntityItem entityitem = new EntityItem(worldObj,posX,posY,posZ,new ItemStack(item.getItem(),1,meta));
 			entityitem.motionX = entityitem.motionY = entityitem.motionZ = 0D;
@@ -121,8 +96,7 @@ public class EntityItemInstabilityOrb extends EntityItem{
 			worldObj.spawnEntityInWorld(entityitem);
 			
 			PacketPipeline.sendToAllAround(this,64D,new C21EffectEntity(FXType.Entity.ORB_TRANSFORMATION,posX,posY,posZ,0.25F,0.4F));
-		}*/
-		
+		}
 		setDead();
 	}
 	
