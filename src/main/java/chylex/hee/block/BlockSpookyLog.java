@@ -45,7 +45,7 @@ public class BlockSpookyLog extends Block{
 	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune){
 		super.dropBlockAsItemWithChance(world,x,y,z,meta,chance,fortune);
 		
-		if (meta > 0 && !world.isRemote && world.rand.nextInt(4) == 0){
+		if (meta > 0 && !world.isRemote && world.rand.nextInt(25) <= 15){
 			EntityPlayer closest = null;
 			double curDist = 8D;
 			
@@ -66,7 +66,7 @@ public class BlockSpookyLog extends Block{
 					if ((is = closest.inventory.getStackInSlot(a)) == null)continue;
 					
 					if (is.getItem() == ItemList.ghost_amulet && is.getItemDamage() == 1){
-						if (world.rand.nextInt(5) <= 1)dropBlockAsItem(world,x,y,z,new ItemStack(ItemList.ectoplasm));
+						dropBlockAsItem(world,x,y,z,new ItemStack(ItemList.ectoplasm));
 						
 						PacketPipeline.sendToPlayer(closest,new C08PlaySound(C08PlaySound.GHOST_DEATH,closest.posX,closest.posY,closest.posZ,1.8F,0.9F+world.rand.nextFloat()*0.3F));
 						
