@@ -45,7 +45,7 @@ public class BlockSpookyLog extends Block{
 	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune){
 		super.dropBlockAsItemWithChance(world,x,y,z,meta,chance,fortune);
 		
-		if (meta > 0 && !world.isRemote && world.rand.nextInt(25) <= 15){
+		if (meta > 0 && !world.isRemote && world.rand.nextInt(4) <= 2){
 			EntityPlayer closest = null;
 			double curDist = 8D;
 			
