@@ -43,7 +43,7 @@ public class NotEnoughItemsIntegration implements IIntegrationHandler{
 			
 			@Override
 			public boolean lastKeyTyped(GuiContainer gui, char keyChar, int keyCode){
-				return keyCode == CompendiumEventsClient.getCompendiumKeyCode() ? handleItemStack(GuiContainerManager.getStackMouseOver(gui)) : false;
+				return CompendiumEventsClient.getInstance().isKeybindingValid() && keyCode == CompendiumEventsClient.getCompendiumKeyCode() ? handleItemStack(GuiContainerManager.getStackMouseOver(gui)) : false;
 			}
 			
 			@Override

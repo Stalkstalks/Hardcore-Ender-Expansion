@@ -38,7 +38,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public final class CompendiumEventsClient{
+	
 	private static CompendiumEventsClient instance;
+	
+	public static CompendiumEventsClient getInstance() {
+		return instance;
+	}
 	
 	public static void register(){
 		if (instance == null)FMLCommonHandler.instance().bus().register(instance = new CompendiumEventsClient());
@@ -115,12 +120,19 @@ public final class CompendiumEventsClient{
 		instance.achievementTimer = 120;
 	}
 	
+	public boolean isKeybindingValid() {
+		if (keyOpenCompendium == null || keyOpenCompendium.getKeyCode() == 0) {
+			return false;
+		}		
+		return true;
+	}
+	
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent e){
 		Stopwatch.time("CompendiumEventsClient - key conflict check");
 		
 		for(KeyBinding kb:Minecraft.getMinecraft().gameSettings.keyBindings){
-			if (kb != instance.keyOpenCompendium && kb.getKeyCode() == instance.keyOpenCompendium.getKeyCode()){
+			if (isKeybindingValid() && kb != instance.keyOpenCompendium && kb.getKeyCode() == instance.keyOpenCompendium.getKeyCode()){
 				HardcoreEnderExpansion.notifications.report(I18n.format("key.openCompendium.conflict").replace("$",I18n.format(kb.getKeyDescription())));
 				break;
 			}
@@ -137,7 +149,7 @@ public final class CompendiumEventsClient{
 		
 		if (achievementTimer > Byte.MIN_VALUE && --achievementTimer == Byte.MIN_VALUE)Minecraft.getMinecraft().guiAchievement.func_146257_b();
 		
-		if ((keyOpenCompendium.isPressed() || Keyboard.getEventKeyState() && Keyboard.getEventKey() == keyOpenCompendium.getKeyCode()) && (mc.inGameHasFocus || mc.currentScreen instanceof GuiContainer)){
+		if (isKeybindingValid() && (keyOpenCompendium.isPressed() || Keyboard.getEventKeyState() && Keyboard.getEventKey() == keyOpenCompendium.getKeyCode()) && (mc.inGameHasFocus || mc.currentScreen instanceof GuiContainer)){
 			if (canOpenCompendium()){
 				KnowledgeObject<? extends IKnowledgeObjectInstance<?>> obj = null;
 				
