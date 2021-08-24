@@ -26,6 +26,7 @@ import chylex.hee.proxy.ModClientProxy;
 import chylex.hee.proxy.ModCommonProxy;
 import chylex.hee.system.achievements.AchievementManager;
 import chylex.hee.system.logging.Stopwatch;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -155,9 +156,12 @@ public final class CompendiumEventsClient{
 					
 					int mouseX = Mouse.getX()*res.getScaledWidth()/mc.displayWidth,
 						mouseY = res.getScaledHeight()-Mouse.getY()*res.getScaledHeight()/mc.displayHeight-1;
+
+					int xSize = ReflectionUtils.getFieldValue(container, "xSize");
+					int ySize = ReflectionUtils.getFieldValue(container, "ySize");
 					
-					mouseX -= (container.width-container.xSize)/2;
-					mouseY -= (container.height-container.ySize)/2;
+					mouseX -= (container.width-xSize)/2;
+					mouseY -= (container.height-ySize)/2;
 					
 					for(Slot slot:slots){
 						if (slot.getHasStack() && slot.func_111238_b() &&

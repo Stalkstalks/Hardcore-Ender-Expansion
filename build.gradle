@@ -72,7 +72,7 @@ jar {
 	archiveName = modid+"  MC-"+project.minecraft.version+"  v"+modver+".jar"
 
     manifest {
-        attributes 'FMLAT': 'hee_at.cfg'
+        //attributes 'FMLAT': 'hee_at.cfg'
     }
 }
 tasks.build.dependsOn createResourcePack

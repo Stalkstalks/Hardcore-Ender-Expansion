@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
 import chylex.hee.api.message.element.base.Precondition;
+import chylex.hee.system.util.ReflectionUtils;
 
 public class ListValue<T> extends Precondition<List<T>>{
 	public static final ListValue<String> strings(Precondition<String> condition){
@@ -31,17 +32,26 @@ public class ListValue<T> extends Precondition<List<T>>{
 
 	@Override
 	public boolean checkValue(NBTBase tag){
-		for(NBTBase element:(List<NBTBase>)((NBTTagList)tag).tagList){
-			if (!condition.checkType(element) || !condition.checkValue(element))return false;
-		}
-		
+		List tagList = ReflectionUtils.getFieldValue((List<NBTBase>)((NBTTagList)tag), "tagList");
+		for(Object element : tagList){			
+			if (element instanceof NBTBase) {
+				if (!condition.checkType((NBTBase) element) || !condition.checkValue((NBTBase) element)) { 
+					return false;
+				}					
+			}
+		}		
 		return true;
 	}
 
 	@Override
 	public List<T> getValue(NBTBase tag){
 		List<T> elements = new ArrayList<>();
-		for(NBTBase element:(List<NBTBase>)((NBTTagList)tag).tagList)elements.add(condition.getValue(element));
+		List tagList = ReflectionUtils.getFieldValue((List<NBTBase>)((NBTTagList)tag), "tagList");
+		for (Object element : tagList) { 
+			if (element instanceof NBTBase) {
+				elements.add(condition.getValue((NBTBase) element));
+			}
+		}
 		return elements;
 	}
 }

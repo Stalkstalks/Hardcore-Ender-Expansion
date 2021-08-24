@@ -1,12 +1,16 @@
 package chylex.hee.block;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ObjectIntIdentityMap;
 import chylex.hee.system.logging.Log;
 import chylex.hee.system.logging.Stopwatch;
+import chylex.hee.system.util.ReflectionUtils;
 import chylex.hee.system.util.Unfinalizer;
 import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
@@ -27,13 +31,18 @@ public class BlockReplaceHelper{
 						String registryName = Block.blockRegistry.getNameForObject(block);
 						int id = Block.getIdFromBlock(block);
 						
-						Log.debug("Replacing block - $0/$1",id,registryName);
+						Log.debug("Replacing block - $0/$1",id,registryName);						
 						
-						((ItemBlock)Item.getItemFromBlock(block)).field_150939_a = replacement;
+						ReflectionUtils.setFieldValue(((ItemBlock)Item.getItemFromBlock(block)), "field_150939_a", replacement);						
 						
 						FMLControlledNamespacedRegistry<Block> registryBlocks = GameData.getBlockRegistry();
-						registryBlocks.registryObjects.put(registryName,replacement);
-						registryBlocks.underlyingIntegerMap.func_148746_a(replacement,id); // OBFUSCATED put object
+						
+						Map registryObjects = ReflectionUtils.getFieldValue(registryBlocks, "registryObjects");
+						ObjectIntIdentityMap underlyingIntegerMap = ReflectionUtils.getFieldValue(registryBlocks, "underlyingIntegerMap");						
+						registryObjects.put(registryName,replacement);
+						underlyingIntegerMap.func_148746_a(replacement,id); // OBFUSCATED put object
+						ReflectionUtils.setFieldValue(registryBlocks, "registryObjects", registryObjects);
+						ReflectionUtils.setFieldValue(registryBlocks, "underlyingIntegerMap", underlyingIntegerMap);
 						
 						blockField.setAccessible(true);
 						Unfinalizer.unfinalizeField(blockField);

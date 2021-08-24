@@ -27,6 +27,7 @@ import chylex.hee.packets.client.C22EffectLine;
 import chylex.hee.system.util.BlockPosM;
 import chylex.hee.system.util.ColorUtil;
 import chylex.hee.system.util.MathUtil;
+import chylex.hee.system.util.ReflectionUtils;
 
 public enum CurseType{
 	TELEPORTATION(0, new ICurseHandler(){
@@ -118,13 +119,13 @@ public enum CurseType{
 			}
 			else if (entity instanceof EntityGhast){
 				EntityGhast ghast = (EntityGhast)entity;
-				
-				if (ghast.targetedEntity == null || ghast.targetedEntity instanceof EntityPlayer){
+				Entity target = ReflectionUtils.getFieldValue(ghast, "targetedEntity");
+				if (target == null || target instanceof EntityPlayer){
 					EntityLiving newTarget = getMob(ghast,64D);
 					
 					if (newTarget != null){
 						cooldown = 60;
-						ghast.targetedEntity = newTarget;
+						ReflectionUtils.setFieldValue(ghast, "targetedEntity", newTarget);
 					}
 				}
 			}
@@ -165,7 +166,9 @@ public enum CurseType{
 				if (creature.getEntityToAttack() != null)creature.setTarget(null);
 				if (creature.getAttackTarget() != null)creature.setAttackTarget(null);
 			}
-			else if (entity instanceof EntityGhast)((EntityGhast)entity).targetedEntity = null;
+			else if (entity instanceof EntityGhast) { 
+				ReflectionUtils.setFieldValue(entity, "targetedEntity", null);
+			}
 			
 			return entity.ticksExisted%20 == 0;
 		}
@@ -379,12 +382,13 @@ public enum CurseType{
 					
 					while(!indexes.isEmpty()){
 						int index = indexes.get(rand.nextInt(indexes.size()));
-						indexes.remove(index);
-						if (equipment[index] == null || MathUtil.floatEquals(living.equipmentDropChances[index],0F))continue;
-						
-						ItemStack is = equipment[index];
-						
-						if (living.equipmentDropChances[index] <= 1F && is.isItemStackDamageable()){
+						indexes.remove(index);						
+						float[] equipmentDropChances = ReflectionUtils.getFieldValue(living, "equipmentDropChances");						
+						if (equipment[index] == null || MathUtil.floatEquals(equipmentDropChances[index],0F)) { 
+							continue;
+						}						
+						ItemStack is = equipment[index];						
+						if (equipmentDropChances[index] <= 1F && is.isItemStackDamageable()){
 							int maxDmg = Math.max(is.getMaxDamage()-25,1), dmg = is.getMaxDamage()-rand.nextInt(rand.nextInt(maxDmg)+1);
 							if (dmg > maxDmg)dmg = maxDmg;
 							is.setItemDamage(Math.max(dmg,1));
