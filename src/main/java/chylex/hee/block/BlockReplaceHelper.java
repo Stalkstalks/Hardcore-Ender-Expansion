@@ -36,21 +36,31 @@ public class BlockReplaceHelper{
 						ReflectionUtils.setFieldValue(((ItemBlock)Item.getItemFromBlock(block)), "field_150939_a", replacement);						
 						
 						FMLControlledNamespacedRegistry<Block> registryBlocks = GameData.getBlockRegistry();
+						Log.debug("Got BlockRegistry.");
 						
 						Map registryObjects = ReflectionUtils.getFieldValue(registryBlocks, "registryObjects");
-						ObjectIntIdentityMap underlyingIntegerMap = ReflectionUtils.getFieldValue(registryBlocks, "underlyingIntegerMap");						
+						Log.debug("Got registryObjects.");
+						ObjectIntIdentityMap underlyingIntegerMap = ReflectionUtils.getFieldValue(registryBlocks, "underlyingIntegerMap");
+						Log.debug("Got underlyingIntegerMap.");						
 						registryObjects.put(registryName,replacement);
+						Log.debug("Put "+replacement.getUnlocalizedName()+" in registryObjects with key: "+registryName);						
 						underlyingIntegerMap.func_148746_a(replacement,id); // OBFUSCATED put object
+						Log.debug("OBFUSCATED put object - underlyingIntegerMap");
 						ReflectionUtils.setFieldValue(registryBlocks, "registryObjects", registryObjects);
+						Log.debug("Set new value for registryObjects: registryObjects. For object registryBlocks.");
 						ReflectionUtils.setFieldValue(registryBlocks, "underlyingIntegerMap", underlyingIntegerMap);
+						Log.debug("Set new value for underlyingIntegerMap: underlyingIntegerMap. For object registryBlocks.");
 						
-						blockField.setAccessible(true);
-						Unfinalizer.unfinalizeField(blockField);
+						ReflectionUtils.makeFieldAccessible(blockField);
+						Log.debug("Made "+blockField.getName()+" accessible.");
 						blockField.set(null,replacement);
+						Log.debug("Set "+blockField.getName()+" to "+replacement.getUnlocalizedName()+".");
 						
 						Method delegateNameMethod = replacement.delegate.getClass().getDeclaredMethod("setName",String.class);
 						delegateNameMethod.setAccessible(true);
+						Log.debug("Made "+delegateNameMethod.getName()+" accessible.");
 						delegateNameMethod.invoke(replacement.delegate,toReplace.delegate.name());
+						Log.debug("Invoked "+delegateNameMethod.getName()+".");
 						
 						classTest[0] = blockField.get(null).getClass();
 						classTest[1] = Block.blockRegistry.getObjectById(id).getClass();

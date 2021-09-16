@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import chylex.hee.system.logging.Log;
 import cpw.mods.fml.relauncher.CoreModManager;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.launchwrapper.Launch;
@@ -65,7 +66,10 @@ public class ReflectionUtils {
 		return obfuscated;
 	}	
 	
-	public static String getCorrectFieldName(String aFieldName) {
+	public static String getCorrectFieldName(String aFieldName) {		
+		if (!obfFieldNames.keySet().contains(aFieldName)) {
+			return aFieldName;
+		}		
 		if (checkObfuscated()) {
 			aFieldName = obfFieldNames.get(aFieldName);
 		}
@@ -91,6 +95,7 @@ public class ReflectionUtils {
 		}
 		CachedField y = mCachedFields.get(aClass.getName()+"."+aField.getName());
 		if (y == null) {
+			Log.debug("Caching Field: "+aClass.getName()+"."+aField.getName());
 			mCachedFields.put(aClass.getName()+"."+aField.getName(), new CachedField(aField));
 			return true;
 		}		
@@ -108,6 +113,7 @@ public class ReflectionUtils {
 			return null;
 		}		
 		aFieldName = getCorrectFieldName(aFieldName);
+		Log.debug("Getting Field: "+aFieldName);
 		CachedField y = mCachedFields.get(aClass.getName()+"."+aFieldName);
 		if (y == null) {
 			Field u;
@@ -140,6 +146,7 @@ public class ReflectionUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> T getFieldValue(final Object aInstance, String aFieldName) {		
 		aFieldName = getCorrectFieldName(aFieldName);
+		Log.debug("Getting Field Value: "+aFieldName);
 		try {			
 			return (T) getField(aInstance, aFieldName).get(aInstance);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -154,13 +161,16 @@ public class ReflectionUtils {
 	public static void setFieldValue(final Object aInstance, String aFieldName, boolean aStatic,  Object aNewValue) {
 		Field f;		
 		aFieldName = getCorrectFieldName(aFieldName);
+		Log.debug("Setting Field: "+aFieldName);
 		try {
 			if (aInstance instanceof Class && aStatic) {
 				f = getField((Class) aInstance, aFieldName);
+				makeFieldAccessible(f);
 				f.set(null, aNewValue);
 			}
 			else {			
 				f = getField(aInstance, aFieldName);
+				makeFieldAccessible(f);
 				f.set(aInstance, aNewValue);
 
 			}	
@@ -180,16 +190,21 @@ public class ReflectionUtils {
 			if (superClass == null) {
 				throw e;
 			}
+			Log.debug("Checking Super: "+superClass.getCanonicalName());
 			return getField_Internal(superClass, fieldName);
 		}
 	}	
 
-	public static void makeFieldAccessible(final Field field) {
-		if (!Modifier.isPublic(field.getModifiers()) ||
-				!Modifier.isPublic(field.getDeclaringClass().getModifiers()))
-		{
-			field.setAccessible(true);
-		}
+	public static void makeFieldAccessible(final Field field) {			
+		field.setAccessible(true);
+		if (Modifier.isFinal(field.getModifiers())){
+			try {
+				Unfinalizer.unfinalizeField(field);
+			}
+			catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}	
 	}
 
 
