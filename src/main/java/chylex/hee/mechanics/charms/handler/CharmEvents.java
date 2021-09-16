@@ -45,6 +45,7 @@ import chylex.hee.system.util.BlockPosM;
 import chylex.hee.system.util.CollectionUtil;
 import chylex.hee.system.util.DragonUtil;
 import chylex.hee.system.util.MathUtil;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
@@ -389,7 +390,7 @@ public final class CharmEvents{
 			
 			if (impactRad.length > 0){
 				float[] impactAmt = getProp(sourcePlayer,"impactamt");
-				float lastDamage = e.entityLiving.lastDamage;
+				float lastDamage = ReflectionUtils.getFieldValue(e.entityLiving, "lastDamage");
 				
 				for(int a = 0; a < impactRad.length; a++){
 					List<EntityLivingBase> entities = e.entity.worldObj.getEntitiesWithinAABB(EntityLivingBase.class,e.entity.boundingBox.expand(impactRad[a],impactRad[a],impactRad[a]));

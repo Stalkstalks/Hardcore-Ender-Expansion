@@ -26,6 +26,7 @@ import chylex.hee.proxy.ModClientProxy;
 import chylex.hee.proxy.ModCommonProxy;
 import chylex.hee.system.achievements.AchievementManager;
 import chylex.hee.system.logging.Stopwatch;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -37,7 +38,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public final class CompendiumEventsClient{
+	
 	private static CompendiumEventsClient instance;
+	
+	public static CompendiumEventsClient getInstance() {
+		return instance;
+	}
 	
 	public static void register(){
 		if (instance == null)FMLCommonHandler.instance().bus().register(instance = new CompendiumEventsClient());
@@ -114,12 +120,19 @@ public final class CompendiumEventsClient{
 		instance.achievementTimer = 120;
 	}
 	
+	public boolean isKeybindingValid() {
+		if (keyOpenCompendium == null || keyOpenCompendium.getKeyCode() == 0) {
+			return false;
+		}		
+		return true;
+	}
+	
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent e){
 		Stopwatch.time("CompendiumEventsClient - key conflict check");
 		
 		for(KeyBinding kb:Minecraft.getMinecraft().gameSettings.keyBindings){
-			if (kb != instance.keyOpenCompendium && kb.getKeyCode() == instance.keyOpenCompendium.getKeyCode()){
+			if (isKeybindingValid() && kb != instance.keyOpenCompendium && kb.getKeyCode() == instance.keyOpenCompendium.getKeyCode()){
 				HardcoreEnderExpansion.notifications.report(I18n.format("key.openCompendium.conflict").replace("$",I18n.format(kb.getKeyDescription())));
 				break;
 			}
@@ -136,7 +149,7 @@ public final class CompendiumEventsClient{
 		
 		if (achievementTimer > Byte.MIN_VALUE && --achievementTimer == Byte.MIN_VALUE)Minecraft.getMinecraft().guiAchievement.func_146257_b();
 		
-		if ((keyOpenCompendium.isPressed() || Keyboard.getEventKeyState() && Keyboard.getEventKey() == keyOpenCompendium.getKeyCode()) && (mc.inGameHasFocus || mc.currentScreen instanceof GuiContainer)){
+		if (isKeybindingValid() && (keyOpenCompendium.isPressed() || Keyboard.getEventKeyState() && Keyboard.getEventKey() == keyOpenCompendium.getKeyCode()) && (mc.inGameHasFocus || mc.currentScreen instanceof GuiContainer)){
 			if (canOpenCompendium()){
 				KnowledgeObject<? extends IKnowledgeObjectInstance<?>> obj = null;
 				
@@ -155,9 +168,12 @@ public final class CompendiumEventsClient{
 					
 					int mouseX = Mouse.getX()*res.getScaledWidth()/mc.displayWidth,
 						mouseY = res.getScaledHeight()-Mouse.getY()*res.getScaledHeight()/mc.displayHeight-1;
+
+					int xSize = ReflectionUtils.getFieldValue(container, "xSize");
+					int ySize = ReflectionUtils.getFieldValue(container, "ySize");
 					
-					mouseX -= (container.width-container.xSize)/2;
-					mouseY -= (container.height-container.ySize)/2;
+					mouseX -= (container.width-xSize)/2;
+					mouseY -= (container.height-ySize)/2;
 					
 					for(Slot slot:slots){
 						if (slot.getHasStack() && slot.func_111238_b() &&

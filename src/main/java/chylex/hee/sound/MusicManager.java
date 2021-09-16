@@ -4,6 +4,7 @@ import net.minecraft.client.audio.MusicTicker;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.common.MinecraftForge;
 import chylex.hee.system.logging.Log;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -27,16 +28,18 @@ public final class MusicManager{
 		if (hasLoaded || (!enableCustomMusic && !removeVanillaDelay))return;
 		
 		Minecraft mc = Minecraft.getMinecraft();
+		MusicTicker mcMusicTicker = ReflectionUtils.getFieldValue(mc, "mcMusicTicker");
 		
-		if (mc.mcMusicTicker != null){
-			Class<? extends MusicTicker> tickerClass = mc.mcMusicTicker.getClass();
+		
+		if (mcMusicTicker != null){
+			Class<? extends MusicTicker> tickerClass = mcMusicTicker.getClass();
 			
 			if (tickerClass == MusicTicker.class){
-				mc.mcMusicTicker = new CustomMusicTicker(mc,null);
+				ReflectionUtils.setFieldValue(mc, "mcMusicTicker", new CustomMusicTicker(mc,null));
 				Log.info("Successfully replaced music system.");
 			}
 			else{
-				mc.mcMusicTicker = new CustomMusicTicker(mc,mc.mcMusicTicker);
+				ReflectionUtils.setFieldValue(mc, "mcMusicTicker", new CustomMusicTicker(mc,mcMusicTicker));
 				Log.info("Successfully wrapped a music system replaced by another mod: $0",tickerClass.getName());
 			}
 

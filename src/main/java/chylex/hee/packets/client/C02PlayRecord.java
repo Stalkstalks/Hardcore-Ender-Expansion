@@ -13,6 +13,7 @@ import chylex.hee.item.ItemMusicDisk;
 import chylex.hee.packets.AbstractClientPacket;
 import chylex.hee.sound.CustomMusicTicker;
 import chylex.hee.system.util.BlockPosM;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -51,7 +52,7 @@ public class C02PlayRecord extends AbstractClientPacket{
 
 		SoundHandler soundHandler = mc.getSoundHandler();
 		ChunkCoordinates coords = new ChunkCoordinates(pos.x,pos.y,pos.z);
-		Map mapSoundPositions = mc.renderGlobal.mapSoundPositions;
+		Map mapSoundPositions = ReflectionUtils.getFieldValue(mc.renderGlobal, "mapSoundPositions");
 		ISound currentSound = (ISound)mapSoundPositions.get(coords);
 
 		if (currentSound != null){

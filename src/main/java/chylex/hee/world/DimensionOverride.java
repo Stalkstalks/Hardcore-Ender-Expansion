@@ -11,6 +11,7 @@ import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
+import chylex.hee.system.util.ReflectionUtils;
 import chylex.hee.world.biome.BiomeGenHardcoreEnd;
 import chylex.hee.world.structure.island.ComponentIsland;
 import chylex.hee.world.structure.island.StructureIsland;
@@ -21,7 +22,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 public final class DimensionOverride{
 	public static void setup(){
 		BiomeGenBase.getBiomeGenArray()[9] = null;
-		BiomeGenBase.sky = new BiomeGenHardcoreEnd(9).setColor(8421631).setBiomeName("Sky").setDisableRain();
+		ReflectionUtils.setFieldValue(BiomeGenBase.class, "sky", new BiomeGenHardcoreEnd(9).setColor(8421631).setBiomeName("Sky").setDisableRain());
 		BiomeGenBase.getBiomeGenArray()[9] = BiomeGenBase.sky;
 
 		MapGenStructureIO.registerStructure(StructureTower.class,"hardcoreenderdragon_EndTower");
@@ -60,7 +61,7 @@ public final class DimensionOverride{
 	public void onWorldLoad(WorldEvent.Load e){
 		if (e.world.provider.dimensionId == 1 && e.world instanceof WorldServer){
 			WorldServer world = (WorldServer)e.world;
-			world.chunkProvider = world.theChunkProviderServer = new ChunkProviderServerOverride(world);
+			ReflectionUtils.setFieldValue(world, "chunkProvider", (world.theChunkProviderServer = new ChunkProviderServerOverride(world)));
 		}
 	}
 	

@@ -23,6 +23,7 @@ import chylex.hee.mechanics.enhancements.EnhancementHandler;
 import chylex.hee.mechanics.enhancements.types.EnderPearlEnhancements;
 import chylex.hee.packets.PacketPipeline;
 import chylex.hee.packets.client.C20Effect;
+import chylex.hee.system.util.ReflectionUtils;
 import cpw.mods.fml.client.FMLClientHandler;
 
 public class EntityProjectileEnhancedEnderPearl extends EntityEnderPearl{
@@ -105,10 +106,11 @@ public class EntityProjectileEnhancedEnderPearl extends EntityEnderPearl{
 		ride.lastTickPosY = ride.prevPosY = ride.posY = posY+ride.height+yOffset;
 		ride.lastTickPosZ = ride.prevPosZ = ride.posZ = posZ;
 		NetHandlerPlayServer serverHandler = ((EntityPlayerMP)ride).playerNetServerHandler;
-		serverHandler.floatingTickCount = 0;
-		serverHandler.lastPosX = ride.posX;
-		serverHandler.lastPosY = ride.posY;
-		serverHandler.lastPosZ = ride.posZ;
+		
+		ReflectionUtils.setFieldValue(serverHandler, "floatingTickCount", 0);
+		ReflectionUtils.setFieldValue(serverHandler, "lastPosX", ride.posX);
+		ReflectionUtils.setFieldValue(serverHandler, "lastPosY", ride.posY);
+		ReflectionUtils.setFieldValue(serverHandler, "lastPosZ", ride.posZ);
 	}
 	
 	@Override

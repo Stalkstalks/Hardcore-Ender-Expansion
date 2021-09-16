@@ -13,6 +13,7 @@ import net.minecraft.world.gen.structure.MapGenScatteredFeature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.ChunkProviderEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import chylex.hee.system.util.ReflectionUtils;
 import chylex.hee.world.biome.BiomeGenHardcoreEnd;
 import chylex.hee.world.structure.island.MapGenIsland;
 import chylex.hee.world.structure.tower.MapGenTower;
@@ -26,7 +27,7 @@ public class ChunkProviderHardcoreEnd extends ChunkProviderEnd{
 	public ChunkProviderHardcoreEnd(World world, long seed){
 		super(world,seed);
 		this.world = world;
-		this.randCopy = endRNG;
+		this.randCopy = ReflectionUtils.getFieldValue(this, "endRNG");
 		
 		islandGen = new MapGenIsland();
 		towerGen = new MapGenTower();

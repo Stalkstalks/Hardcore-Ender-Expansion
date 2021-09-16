@@ -1,12 +1,16 @@
 package chylex.hee.block;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ObjectIntIdentityMap;
 import chylex.hee.system.logging.Log;
 import chylex.hee.system.logging.Stopwatch;
+import chylex.hee.system.util.ReflectionUtils;
 import chylex.hee.system.util.Unfinalizer;
 import cpw.mods.fml.common.registry.FMLControlledNamespacedRegistry;
 import cpw.mods.fml.common.registry.GameData;
@@ -27,21 +31,36 @@ public class BlockReplaceHelper{
 						String registryName = Block.blockRegistry.getNameForObject(block);
 						int id = Block.getIdFromBlock(block);
 						
-						Log.debug("Replacing block - $0/$1",id,registryName);
+						Log.debug("Replacing block - $0/$1",id,registryName);						
 						
-						((ItemBlock)Item.getItemFromBlock(block)).field_150939_a = replacement;
+						ReflectionUtils.setFieldValue(((ItemBlock)Item.getItemFromBlock(block)), "field_150939_a", replacement);						
 						
 						FMLControlledNamespacedRegistry<Block> registryBlocks = GameData.getBlockRegistry();
-						registryBlocks.registryObjects.put(registryName,replacement);
-						registryBlocks.underlyingIntegerMap.func_148746_a(replacement,id); // OBFUSCATED put object
+						Log.debug("Got BlockRegistry.");
 						
-						blockField.setAccessible(true);
-						Unfinalizer.unfinalizeField(blockField);
+						Map registryObjects = ReflectionUtils.getFieldValue(registryBlocks, "registryObjects");
+						Log.debug("Got registryObjects.");
+						ObjectIntIdentityMap underlyingIntegerMap = ReflectionUtils.getFieldValue(registryBlocks, "underlyingIntegerMap");
+						Log.debug("Got underlyingIntegerMap.");						
+						registryObjects.put(registryName,replacement);
+						Log.debug("Put "+replacement.getUnlocalizedName()+" in registryObjects with key: "+registryName);						
+						underlyingIntegerMap.func_148746_a(replacement,id); // OBFUSCATED put object
+						Log.debug("OBFUSCATED put object - underlyingIntegerMap");
+						ReflectionUtils.setFieldValue(registryBlocks, "registryObjects", registryObjects);
+						Log.debug("Set new value for registryObjects: registryObjects. For object registryBlocks.");
+						ReflectionUtils.setFieldValue(registryBlocks, "underlyingIntegerMap", underlyingIntegerMap);
+						Log.debug("Set new value for underlyingIntegerMap: underlyingIntegerMap. For object registryBlocks.");
+						
+						ReflectionUtils.makeFieldAccessible(blockField);
+						Log.debug("Made "+blockField.getName()+" accessible.");
 						blockField.set(null,replacement);
+						Log.debug("Set "+blockField.getName()+" to "+replacement.getUnlocalizedName()+".");
 						
 						Method delegateNameMethod = replacement.delegate.getClass().getDeclaredMethod("setName",String.class);
 						delegateNameMethod.setAccessible(true);
+						Log.debug("Made "+delegateNameMethod.getName()+" accessible.");
 						delegateNameMethod.invoke(replacement.delegate,toReplace.delegate.name());
+						Log.debug("Invoked "+delegateNameMethod.getName()+".");
 						
 						classTest[0] = blockField.get(null).getClass();
 						classTest[1] = Block.blockRegistry.getObjectById(id).getClass();

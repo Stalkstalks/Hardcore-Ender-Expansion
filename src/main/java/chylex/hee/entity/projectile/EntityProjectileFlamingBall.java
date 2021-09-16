@@ -12,6 +12,7 @@ import chylex.hee.HardcoreEnderExpansion;
 import chylex.hee.proxy.ModCommonProxy;
 import chylex.hee.system.util.BlockPosM;
 import chylex.hee.system.util.DragonUtil;
+import chylex.hee.system.util.ReflectionUtils;
 
 public class EntityProjectileFlamingBall extends EntityFireball{
 	public EntityProjectileFlamingBall(World world){
@@ -52,8 +53,12 @@ public class EntityProjectileFlamingBall extends EntityFireball{
 			}
 			
 			mop.entityHit.attackEntityFrom(DamageSource.onFire,3F);
-			if (isLiving)mop.entityHit.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity),ModCommonProxy.opMobs ? 8F : 5F);
-			mop.entityHit.fire += 3+EnchantmentProtection.getFireTimeForEntity(mop.entityHit,25);
+			if (isLiving) { 
+				mop.entityHit.attackEntityFrom(DamageSource.causeMobDamage(shootingEntity),ModCommonProxy.opMobs ? 8F : 5F);
+			}
+			int fire = ReflectionUtils.getFieldValue(mop.entityHit, "fire");
+			fire += 3+EnchantmentProtection.getFireTimeForEntity(mop.entityHit,25);
+			ReflectionUtils.setFieldValue(mop.entityHit, "fire", fire);
 		}
 		else if (rand.nextInt(3) == 0){
 			switch(mop.sideHit){
