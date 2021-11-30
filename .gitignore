@@ -1,18 +1,28 @@
-# Eclipse
+.gradle
+.settings
+/.idea/
+/run/
+/build/
+/eclipse/
 .classpath
 .project
-.settings/
-bin/
-eclipse/
-
-# Project
-.gradle/
-run/
-build/
-
-# IDEA
+/bin/
+/config/
+/crash-reports/
+/logs/
+options.txt
+/saves/
+usernamecache.json
+banned-ips.json
+banned-players.json
+eula.txt
+ops.json
+server.properties
+servers.dat
+usercache.json
+whitelist.json
+/out/
 *.iml
 *.ipr
 *.iws
-out/
-*.bat
+src/main/resources/mixins.*.json
