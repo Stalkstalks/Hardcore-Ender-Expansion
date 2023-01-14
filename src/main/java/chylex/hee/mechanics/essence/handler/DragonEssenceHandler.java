@@ -3,7 +3,10 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.SortedSet;
+import java.util.stream.IntStream;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.Enchantment;
@@ -204,16 +207,17 @@ public class DragonEssenceHandler extends AltarActionHandler{
 				if (enchants == null || enchants.tagCount() == 0)return;
 				
 				for(int attempt = 0; attempt < 3; attempt++){
-					WeightedList<ObjectWeightPair<Enchantment>> list = new WeightedList<>();
+					final WeightedList<ObjectWeightPair<Enchantment>> list = new WeightedList<>();
+
+					final ObjectWeightPair<?>[] eligibleEnchants = IntStream.range(0, enchants.tagCount())
+						.mapToObj(i -> Enchantment.enchantmentsList[enchants.getCompoundTagAt(i).getShort("id")])
+						.filter(Objects::nonNull)
+						.map(e -> ObjectWeightPair.of(e, e.getWeight()))
+						.toArray(ObjectWeightPair<?>[]::new);
+					list.addAll((ObjectWeightPair<Enchantment>[]) eligibleEnchants);
+
 					
-					for(int a = 0; a < enchants.tagCount(); a++){
-						Enchantment e = Enchantment.enchantmentsList[enchants.getCompoundTagAt(a).getShort("id")];
-						if (e == null)continue;
-						
-						list.add(ObjectWeightPair.of(e,e.getWeight()));
-					}
-					
-					if (list.isEmpty())continue; // the enchantments are no longer in the game
+					if (list.isEmpty()) continue; // the enchantments are no longer in the game
 					
 					Enchantment chosenEnchantment = list.getRandomItem(item.worldObj.rand).getObject();
 					
