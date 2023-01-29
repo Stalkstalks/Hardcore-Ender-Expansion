@@ -1,47 +1,51 @@
 package chylex.hee.block;
+
 import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.BlockStone;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+
 import chylex.hee.entity.block.EntityBlockFallingObsidian;
 
-public class BlockObsidianEnd extends BlockStone{
-	@Override
-	public void onBlockAdded(World world, int x, int y, int z){
-		world.scheduleBlockUpdate(x,y,z,this,tickRate(world));
-	}
+public class BlockObsidianEnd extends BlockStone {
 
-	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor){
-		world.scheduleBlockUpdate(x,y,z,this,tickRate(world));
-	}
+    @Override
+    public void onBlockAdded(World world, int x, int y, int z) {
+        world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
+    }
 
-	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand){
-		tryToFall(world,x,y,z);
-	}
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
+        world.scheduleBlockUpdate(x, y, z, this, tickRate(world));
+    }
 
-	private void tryToFall(World world, int x, int y, int z){
-		if (BlockFalling.func_149831_e(world,x,y-1,z) && y >= 0 && !world.isRemote){
-			world.spawnEntityInWorld(new EntityBlockFallingObsidian(world,x+0.5F,y+0.5F,z+0.5F));
-		}
-	}
-	
-	@Override
-	public int tickRate(World world){
-		return 3;
-	}
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        tryToFall(world, x, y, z);
+    }
 
-	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune){
-		return Item.getItemFromBlock(Blocks.obsidian);
-	}
+    private void tryToFall(World world, int x, int y, int z) {
+        if (BlockFalling.func_149831_e(world, x, y - 1, z) && y >= 0 && !world.isRemote) {
+            world.spawnEntityInWorld(new EntityBlockFallingObsidian(world, x + 0.5F, y + 0.5F, z + 0.5F));
+        }
+    }
 
-	@Override
-	public int quantityDropped(Random rand){
-		return 1;
-	}
+    @Override
+    public int tickRate(World world) {
+        return 3;
+    }
+
+    @Override
+    public Item getItemDropped(int meta, Random rand, int fortune) {
+        return Item.getItemFromBlock(Blocks.obsidian);
+    }
+
+    @Override
+    public int quantityDropped(Random rand) {
+        return 1;
+    }
 }

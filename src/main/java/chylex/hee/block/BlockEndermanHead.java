@@ -1,5 +1,7 @@
 package chylex.hee.block;
+
 import java.util.Random;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -13,77 +15,90 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
 import chylex.hee.init.ItemList;
 import chylex.hee.system.util.BlockPosM;
 import chylex.hee.tileentity.TileEntityEndermanHead;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockEndermanHead extends BlockContainer{
-	public BlockEndermanHead(){
-		super(Material.circuits);
-		setBlockBounds(0.25F,0.0F,0.25F,0.75F,0.5F,0.75F);
-	}
+public class BlockEndermanHead extends BlockContainer {
 
-	@Override
-	public int getRenderType(){
-		return -1;
-	}
+    public BlockEndermanHead() {
+        super(Material.circuits);
+        setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
+    }
 
-	@Override
-	public boolean isOpaqueCube(){
-		return false;
-	}
+    @Override
+    public int getRenderType() {
+        return -1;
+    }
 
-	@Override
-	public boolean renderAsNormalBlock(){
-		return false;
-	}
+    @Override
+    public boolean isOpaqueCube() {
+        return false;
+    }
 
-	@Override
-	public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z){
-		switch(BlockPosM.tmp(x,y,z).getMetadata(world)&7){
-			default: case 1: setBlockBounds(0.25F,0.0F,0.25F,0.75F,0.5F,0.75F); break;
-			case 2: setBlockBounds(0.25F,0.25F,0.5F,0.75F,0.75F,1.0F); break;
-			case 3: setBlockBounds(0.25F,0.25F,0.0F,0.75F,0.75F,0.5F); break;
-			case 4: setBlockBounds(0.5F,0.25F,0.25F,1.0F,0.75F,0.75F); break;
-			case 5: setBlockBounds(0.0F,0.25F,0.25F,0.5F,0.75F,0.75F);
-		}
-	}
+    @Override
+    public boolean renderAsNormalBlock() {
+        return false;
+    }
 
-	@Override
-	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z){
-		setBlockBoundsBasedOnState(world,x,y,z);
-		return super.getCollisionBoundingBoxFromPool(world,x,y,z);
-	}
+    @Override
+    public void setBlockBoundsBasedOnState(IBlockAccess world, int x, int y, int z) {
+        switch (BlockPosM.tmp(x, y, z).getMetadata(world) & 7) {
+            default:
+            case 1:
+                setBlockBounds(0.25F, 0.0F, 0.25F, 0.75F, 0.5F, 0.75F);
+                break;
+            case 2:
+                setBlockBounds(0.25F, 0.25F, 0.5F, 0.75F, 0.75F, 1.0F);
+                break;
+            case 3:
+                setBlockBounds(0.25F, 0.25F, 0.0F, 0.75F, 0.75F, 0.5F);
+                break;
+            case 4:
+                setBlockBounds(0.5F, 0.25F, 0.25F, 1.0F, 0.75F, 0.75F);
+                break;
+            case 5:
+                setBlockBounds(0.0F, 0.25F, 0.25F, 0.5F, 0.75F, 0.75F);
+        }
+    }
 
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack is){
-		BlockPosM.tmp(x,y,z).setMetadata(world,MathHelper.floor_double((entity.rotationYaw*4F/360F)+2.5D)&3,2);
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta){
-		return new TileEntityEndermanHead();
-	}
-	
-	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune){
-		return ItemList.enderman_head;
-	}
-	
-	@Override
-	public Item getItem(World world, int x, int y, int z){
-		return ItemList.enderman_head;
-	}
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+        setBlockBoundsBasedOnState(world, x, y, z);
+        return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister){}
+    @Override
+    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack is) {
+        BlockPosM.tmp(x, y, z)
+                .setMetadata(world, MathHelper.floor_double((entity.rotationYaw * 4F / 360F) + 2.5D) & 3, 2);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta){
-		return Blocks.soul_sand.getIcon(side,0);
-	}
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        return new TileEntityEndermanHead();
+    }
+
+    @Override
+    public Item getItemDropped(int meta, Random rand, int fortune) {
+        return ItemList.enderman_head;
+    }
+
+    @Override
+    public Item getItem(World world, int x, int y, int z) {
+        return ItemList.enderman_head;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerBlockIcons(IIconRegister iconRegister) {}
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(int side, int meta) {
+        return Blocks.soul_sand.getIcon(side, 0);
+    }
 }

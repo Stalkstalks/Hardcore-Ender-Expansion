@@ -1,5 +1,5 @@
 package chylex.hee.tileentity;
-import gnu.trove.set.hash.TIntHashSet;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -8,134 +8,135 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class TileEntityAbstractInventory extends TileEntity implements ISidedInventory{
-	protected ItemStack[] items;
-	private String customName;
-	private TIntHashSet slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity = new TIntHashSet();
-	
-	public TileEntityAbstractInventory(){
-		items = new ItemStack[getSizeInventory()];
-	}
-	
-	@Override
-	public void updateEntity(){
-		super.updateEntity();
-		
-		if (!slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.isEmpty()){
-			for(int slot:slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.toArray()){
-				setInventorySlotContents(slot,getStackInSlot(slot));
-			}
-			
-			slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.clear();
-		}
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound nbt){
-		super.writeToNBT(nbt);
+import gnu.trove.set.hash.TIntHashSet;
 
-		NBTTagList itemList = new NBTTagList();
+public abstract class TileEntityAbstractInventory extends TileEntity implements ISidedInventory {
 
-		for(int slot = 0; slot < items.length; ++slot){
-			if (items[slot] != null){
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot",(byte)slot);
-				itemList.appendTag(items[slot].writeToNBT(tag));
-			}
-		}
+    protected ItemStack[] items;
+    private String customName;
+    private TIntHashSet slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity = new TIntHashSet();
 
-		nbt.setTag("Items",itemList);
-		if (hasCustomInventoryName())nbt.setString("CustomName",customName);
-	}
+    public TileEntityAbstractInventory() {
+        items = new ItemStack[getSizeInventory()];
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt){
-		super.readFromNBT(nbt);
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
 
-		NBTTagList itemList = nbt.getTagList("Items",Constants.NBT.TAG_COMPOUND);
-		items = new ItemStack[getSizeInventory()];
+        if (!slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.isEmpty()) {
+            for (int slot : slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity
+                    .toArray()) {
+                setInventorySlotContents(slot, getStackInSlot(slot));
+            }
 
-		for(int a = 0; a < itemList.tagCount(); ++a){
-			NBTTagCompound tag = itemList.getCompoundTagAt(a);
-			byte slot = tag.getByte("Slot");
-			if (slot >= 0 && slot < items.length)items[slot] = ItemStack.loadItemStackFromNBT(tag);
-		}
-		
-		if (nbt.hasKey("CustomName",Constants.NBT.TAG_STRING))customName = nbt.getString("CustomName");
-	}
+            slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.clear();
+        }
+    }
 
-	@Override
-	public ItemStack getStackInSlot(int slot){
-		return slot >= 0 && slot < items.length ? items[slot] : null;
-	}
+    @Override
+    public void writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
 
-	@Override
-	public final ItemStack decrStackSize(int slot, int amount){
-		if (slot >= 0 && slot < items.length){
-			if (items[slot].stackSize <= amount){
-				ItemStack toReturn = items[slot];
-				items[slot] = null;
-				return toReturn;
-			}
-			else{
-				ItemStack is = items[slot].splitStack(amount);
-				if (is.stackSize == 0)items[slot] = null;
-				return is;
-			}
-		}
-		else return null;
-	}
+        NBTTagList itemList = new NBTTagList();
 
-	@Override
-	public ItemStack getStackInSlotOnClosing(int slot){
-		return null;
-	}
+        for (int slot = 0; slot < items.length; ++slot) {
+            if (items[slot] != null) {
+                NBTTagCompound tag = new NBTTagCompound();
+                tag.setByte("Slot", (byte) slot);
+                itemList.appendTag(items[slot].writeToNBT(tag));
+            }
+        }
 
-	@Override
-	public void setInventorySlotContents(int slot, ItemStack is){
-		if (slot >= 0 && slot < items.length)items[slot] = is;
-	}
+        nbt.setTag("Items", itemList);
+        if (hasCustomInventoryName()) nbt.setString("CustomName", customName);
+    }
 
-	@Override
-	public int getInventoryStackLimit(){
-		return 64;
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
 
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer player){
-		return player.getDistanceSq(xCoord+0.5D,yCoord+0.5D,zCoord+0.5D) <= 64D;
-	}
+        NBTTagList itemList = nbt.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+        items = new ItemStack[getSizeInventory()];
 
-	@Override
-	public void openInventory(){}
+        for (int a = 0; a < itemList.tagCount(); ++a) {
+            NBTTagCompound tag = itemList.getCompoundTagAt(a);
+            byte slot = tag.getByte("Slot");
+            if (slot >= 0 && slot < items.length) items[slot] = ItemStack.loadItemStackFromNBT(tag);
+        }
 
-	@Override
-	public void closeInventory(){}
+        if (nbt.hasKey("CustomName", Constants.NBT.TAG_STRING)) customName = nbt.getString("CustomName");
+    }
 
-	@Override
-	public boolean canInsertItem(int slot, ItemStack is, int side){
-		if (isItemValidForSlot(slot,is)){
-			slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.add(slot);
-			return true;
-		}
-		else return false;
-	}
+    @Override
+    public ItemStack getStackInSlot(int slot) {
+        return slot >= 0 && slot < items.length ? items[slot] : null;
+    }
 
-	@Override
-	public boolean canExtractItem(int slot, ItemStack is, int side){
-		slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.add(slot);
-		return true;
-	}
+    @Override
+    public final ItemStack decrStackSize(int slot, int amount) {
+        if (slot >= 0 && slot < items.length) {
+            if (items[slot].stackSize <= amount) {
+                ItemStack toReturn = items[slot];
+                items[slot] = null;
+                return toReturn;
+            } else {
+                ItemStack is = items[slot].splitStack(amount);
+                if (is.stackSize == 0) items[slot] = null;
+                return is;
+            }
+        } else return null;
+    }
 
-	@Override
-	public String getInventoryName(){
-		return customName != null ? customName : getContainerDefaultName();
-	}
+    @Override
+    public ItemStack getStackInSlotOnClosing(int slot) {
+        return null;
+    }
 
-	@Override
-	public boolean hasCustomInventoryName(){
-		return customName != null && customName.length() > 0;
-	}
-	
-	protected abstract String getContainerDefaultName();
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack is) {
+        if (slot >= 0 && slot < items.length) items[slot] = is;
+    }
+
+    @Override
+    public int getInventoryStackLimit() {
+        return 64;
+    }
+
+    @Override
+    public boolean isUseableByPlayer(EntityPlayer player) {
+        return player.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D) <= 64D;
+    }
+
+    @Override
+    public void openInventory() {}
+
+    @Override
+    public void closeInventory() {}
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack is, int side) {
+        if (isItemValidForSlot(slot, is)) {
+            slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.add(slot);
+            return true;
+        } else return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack is, int side) {
+        slotIndexesToUpdateBecauseTheMotherfuckingHoppersDoNotCallAnythingToNotifyTheTileEntity.add(slot);
+        return true;
+    }
+
+    @Override
+    public String getInventoryName() {
+        return customName != null ? customName : getContainerDefaultName();
+    }
+
+    @Override
+    public boolean hasCustomInventoryName() {
+        return customName != null && customName.length() > 0;
+    }
+
+    protected abstract String getContainerDefaultName();
 }

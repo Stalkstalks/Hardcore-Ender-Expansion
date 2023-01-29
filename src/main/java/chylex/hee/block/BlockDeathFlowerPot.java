@@ -1,64 +1,69 @@
 package chylex.hee.block;
+
 import java.util.Random;
+
 import net.minecraft.block.BlockFlowerPot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
 import chylex.hee.init.BlockList;
 import chylex.hee.proxy.ModCommonProxy;
 import chylex.hee.system.util.BlockPosM;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BlockDeathFlowerPot extends BlockFlowerPot{
-	public BlockDeathFlowerPot(){
-		setTickRandomly(true);
-	}
-	
-	@Override
-	public void updateTick(World world, int x, int y, int z, Random rand){
-		((BlockDeathFlower)BlockList.death_flower).updateFlowerLogic(world,x,y,z,rand);
-	}
-	
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ){
-		return BlockList.death_flower.onBlockActivated(world,x,y,z,player,side,hitX,hitY,hitZ);
-	}
+public class BlockDeathFlowerPot extends BlockFlowerPot {
 
-	@Override
-	public int getDamageValue(World world, int x, int y, int z){
-		return BlockPosM.tmp(x,y,z).getMetadata(world);
-	}
+    public BlockDeathFlowerPot() {
+        setTickRandomly(true);
+    }
 
-	@Override
-	public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune){
-		super.dropBlockAsItemWithChance(world,x,y,z,0,chance,fortune);
-		dropBlockAsItem(world,x,y,z,new ItemStack(BlockList.death_flower,1,meta));
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void randomDisplayTick(World world, int x, int y, int z, Random rand){
-		BlockList.death_flower.randomDisplayTick(world,x,y,z,rand);
-	}
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random rand) {
+        ((BlockDeathFlower) BlockList.death_flower).updateFlowerLogic(world, x, y, z, rand);
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Item getItem(World world, int x, int y, int z){
-		return Item.getItemFromBlock(BlockList.death_flower);
-	}
-	
-	@Override
-	public int getRenderType(){
-		return ModCommonProxy.renderIdFlowerPot;
-	}
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
+            float hitY, float hitZ) {
+        return BlockList.death_flower.onBlockActivated(world, x, y, z, player, side, hitX, hitY, hitZ);
+    }
 
-	public static ItemStack getPlantForMeta(int meta){
-		return new ItemStack(BlockList.death_flower,1,meta);
-	}
+    @Override
+    public int getDamageValue(World world, int x, int y, int z) {
+        return BlockPosM.tmp(x, y, z).getMetadata(world);
+    }
 
-	public static int getMetaForPlant(ItemStack is){
-		return is.getItemDamage();
-	}
+    @Override
+    public void dropBlockAsItemWithChance(World world, int x, int y, int z, int meta, float chance, int fortune) {
+        super.dropBlockAsItemWithChance(world, x, y, z, 0, chance, fortune);
+        dropBlockAsItem(world, x, y, z, new ItemStack(BlockList.death_flower, 1, meta));
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void randomDisplayTick(World world, int x, int y, int z, Random rand) {
+        BlockList.death_flower.randomDisplayTick(world, x, y, z, rand);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Item getItem(World world, int x, int y, int z) {
+        return Item.getItemFromBlock(BlockList.death_flower);
+    }
+
+    @Override
+    public int getRenderType() {
+        return ModCommonProxy.renderIdFlowerPot;
+    }
+
+    public static ItemStack getPlantForMeta(int meta) {
+        return new ItemStack(BlockList.death_flower, 1, meta);
+    }
+
+    public static int getMetaForPlant(ItemStack is) {
+        return is.getItemDamage();
+    }
 }

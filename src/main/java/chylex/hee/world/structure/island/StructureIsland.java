@@ -1,17 +1,20 @@
 package chylex.hee.world.structure.island;
+
 import java.util.Random;
+
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureStart;
 
-public class StructureIsland extends StructureStart{
-	/**
-	 * Required for reflection.
-	 */
-	public StructureIsland(){}
-	
-	public StructureIsland(World world, Random rand, int x, int z){
-		super(x,z);
-		components.add(new ComponentIsland(world,rand,x*16,z*16));
-		updateBoundingBox();
-	}
+public class StructureIsland extends StructureStart {
+
+    /**
+     * Required for reflection.
+     */
+    public StructureIsland() {}
+
+    public StructureIsland(World world, Random rand, int x, int z) {
+        super(x, z);
+        components.add(new ComponentIsland(world, rand, x * 16, z * 16));
+        updateBoundingBox();
+    }
 }
