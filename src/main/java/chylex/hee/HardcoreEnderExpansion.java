@@ -1,6 +1,9 @@
 package chylex.hee;
+
 import java.io.File;
+
 import net.minecraftforge.common.MinecraftForge;
+
 import chylex.hee.api.HeeIMC;
 import chylex.hee.entity.boss.dragon.managers.DragonChunkManager;
 import chylex.hee.gui.core.GuiHandler;
@@ -54,154 +57,162 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
-@Mod(modid = "HardcoreEnderExpansion", name = "Hardcore Ender Expansion", version = "GRADLETOKEN_VERSION", useMetadata = true, guiFactory = "chylex.hee.gui.core.ModGuiFactory")
-public class HardcoreEnderExpansion{
-	@Instance("HardcoreEnderExpansion")
-	public static HardcoreEnderExpansion instance;
+@Mod(
+        modid = "HardcoreEnderExpansion",
+        name = "Hardcore Ender Expansion",
+        version = "GRADLETOKEN_VERSION",
+        useMetadata = true,
+        guiFactory = "chylex.hee.gui.core.ModGuiFactory",
+        dependencies = "required-after:gtnhlib@[0.0.10,)")
+public class HardcoreEnderExpansion {
 
-	@SidedProxy(clientSide = "chylex.hee.proxy.ModClientProxy", serverSide = "chylex.hee.proxy.ModCommonProxy")
-	public static ModCommonProxy proxy;
-	
-	@SidedProxy(clientSide = "chylex.hee.proxy.FXClientProxy", serverSide = "chylex.hee.proxy.FXCommonProxy")
-	public static FXCommonProxy fx;
-	
-	@SidedProxy(clientSide = "chylex.hee.proxy.NotificationClientProxy", serverSide = "chylex.hee.proxy.NotificationCommonProxy")
-	public static NotificationCommonProxy notifications;
-	
-	public static final int buildId = 18_97_16_0;
-	
-	public static String modVersion;
-	public static String configPath;
-	public static File sourceFile;
+    @Instance("HardcoreEnderExpansion")
+    public static HardcoreEnderExpansion instance;
 
-	@EventHandler
-	public void onPreInit(FMLPreInitializationEvent e){
-		Stopwatch.time("PreInitEvent");
-		
-		modVersion = e.getModMetadata().version;
-		configPath = e.getSuggestedConfigurationFile().getParentFile().getName();
-		sourceFile = e.getSourceFile();
-		
-		e.getModMetadata().description = e.getModMetadata().description.replace('$','\u00a7');
-		
-		ReflectionPublicizer.load();
-		Log.initializeDebug();
-		UnitTester.load();
-		
-		// CONFIGURATION LOAD
+    @SidedProxy(clientSide = "chylex.hee.proxy.ModClientProxy", serverSide = "chylex.hee.proxy.ModCommonProxy")
+    public static ModCommonProxy proxy;
 
-		ConfigHandler.register(e.getSuggestedConfigurationFile());
-		BlockList.loadBlocks();
-		ItemList.loadItems();
-		proxy.loadConfiguration();
-		
-		// INITIALIZATION
-		
-		Stopwatch.time("PreInitEvent - data");
-		
-		ModCreativeTab.registerTabs();
-		BlockList.registerBlocks();
-		ItemList.registerItems();
-		BlockList.configureBlocks();
-		ItemList.configureItems();
-		EntityList.registerEntities();
-		BlockList.registerTileEntities();
-		
-		Stopwatch.finish("PreInitEvent - data");
-		
-		// DIMENSION
+    @SidedProxy(clientSide = "chylex.hee.proxy.FXClientProxy", serverSide = "chylex.hee.proxy.FXCommonProxy")
+    public static FXCommonProxy fx;
 
-		DimensionOverride.setup();
-		
-		// ACHIEVEMENTS
-		
-		AchievementManager.register();
-		AchievementEvents.register();
-		
-		// FORGE AND FML
+    @SidedProxy(
+            clientSide = "chylex.hee.proxy.NotificationClientProxy",
+            serverSide = "chylex.hee.proxy.NotificationCommonProxy")
+    public static NotificationCommonProxy notifications;
 
-		Stopwatch.time("PreInitEvent - events");
-		
-		MinecraftForge.EVENT_BUS.register(new MiscEvents());
-		PlayerDataHandler.register();
-		CompendiumEvents.register();
-		CharmPouchHandler.register();
-		WorldDataHandler.register();
-		VoidChestEvents.register();
-		EnergyEvents.register();
-		TempleEvents.register();
-		CurseEvents.register();
-		PlayerTransportBeacons.register();
-		DragonChunkManager.register();
-		
-		Stopwatch.finish("PreInitEvent - events");
-		
-		proxy.registerSidedEvents();
-		proxy.registerRenderers();
-		notifications.register();
-		
-		UnitTester.trigger(RunTime.PREINIT);
-		
-		Stopwatch.finish("PreInitEvent");
-	}
-	
-	@EventHandler
-	public void onInit(FMLInitializationEvent e){
-		Stopwatch.time("InitEvent");
-		
-		PacketPipeline.initializePipeline();
-		NetworkRegistry.INSTANCE.registerGuiHandler(this,GuiHandler.instance);
-		RecipeList.addRecipes();
-		WorldLoot.registerWorldLoot();
-		
-		UnitTester.trigger(RunTime.INIT);
-		
-		Stopwatch.finish("InitEvent");
-	}
-	
-	@EventHandler
-	public void onPostInit(FMLPostInitializationEvent e){
-		Stopwatch.time("PostInitEvent");
-		
-		HeeIMC.runPostInit();
-		KnowledgeRegistrations.initialize();
-		OrbAcquirableItems.initialize(true);
-		OrbSpawnableMobs.initialize();
-		ModIntegrationManager.integrateMods();
-		DimensionOverride.postInit();
-		
-		UnitTester.trigger(RunTime.POSTINIT);
-		
-		Stopwatch.finish("PostInitEvent");
-	}
-	
-	@EventHandler
-	public void onLoadComplete(FMLLoadCompleteEvent e){
-		Stopwatch.time("LoadCompleteEvent");
-		
-		try{
-			DimensionOverride.verifyIntegrity();
-			HeeIMC.runLoadComplete();
-			
-			UnitTester.trigger(RunTime.LOADCOMPLETE);
-			UnitTester.finalizeEventTests();
-		}
-		catch(Throwable t){
-			FMLCommonHandler.instance().raiseException(t,"Critical error handling post-load data.",true);
-		}
-		
-		Stopwatch.finish("LoadCompleteEvent");
-	}
+    public static final int buildId = 18_97_16_0;
 
-	@EventHandler
-	public void onServerStarting(FMLServerStartingEvent e){
-		e.registerServerCommand(new HeeAdminCommand());
-		e.registerServerCommand(new HeeBaconCommand());
-		e.registerServerCommand(new HeeDebugCommand());
-	}
-	
-	@EventHandler
-	public void onIMC(IMCEvent e){
-		for(IMCMessage message:e.getMessages())HeeIMC.acceptIMC(message);
-	}
+    public static String modVersion;
+    public static String configPath;
+    public static File sourceFile;
+
+    @EventHandler
+    public void onPreInit(FMLPreInitializationEvent e) {
+        Stopwatch.time("PreInitEvent");
+
+        modVersion = e.getModMetadata().version;
+        configPath = e.getSuggestedConfigurationFile().getParentFile().getName();
+        sourceFile = e.getSourceFile();
+
+        e.getModMetadata().description = e.getModMetadata().description.replace('$', '\u00a7');
+
+        ReflectionPublicizer.load();
+        Log.initializeDebug();
+        UnitTester.load();
+
+        // CONFIGURATION LOAD
+
+        ConfigHandler.register(e.getSuggestedConfigurationFile());
+        BlockList.loadBlocks();
+        ItemList.loadItems();
+        proxy.loadConfiguration();
+
+        // INITIALIZATION
+
+        Stopwatch.time("PreInitEvent - data");
+
+        ModCreativeTab.registerTabs();
+        BlockList.registerBlocks();
+        ItemList.registerItems();
+        BlockList.configureBlocks();
+        ItemList.configureItems();
+        EntityList.registerEntities();
+        BlockList.registerTileEntities();
+
+        Stopwatch.finish("PreInitEvent - data");
+
+        // DIMENSION
+
+        DimensionOverride.setup();
+
+        // ACHIEVEMENTS
+
+        AchievementManager.register();
+        AchievementEvents.register();
+
+        // FORGE AND FML
+
+        Stopwatch.time("PreInitEvent - events");
+
+        MinecraftForge.EVENT_BUS.register(new MiscEvents());
+        PlayerDataHandler.register();
+        CompendiumEvents.register();
+        CharmPouchHandler.register();
+        WorldDataHandler.register();
+        VoidChestEvents.register();
+        EnergyEvents.register();
+        TempleEvents.register();
+        CurseEvents.register();
+        PlayerTransportBeacons.register();
+        DragonChunkManager.register();
+
+        Stopwatch.finish("PreInitEvent - events");
+
+        proxy.registerSidedEvents();
+        proxy.registerRenderers();
+        notifications.register();
+
+        UnitTester.trigger(RunTime.PREINIT);
+
+        Stopwatch.finish("PreInitEvent");
+    }
+
+    @EventHandler
+    public void onInit(FMLInitializationEvent e) {
+        Stopwatch.time("InitEvent");
+
+        PacketPipeline.initializePipeline();
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, GuiHandler.instance);
+        RecipeList.addRecipes();
+        WorldLoot.registerWorldLoot();
+
+        UnitTester.trigger(RunTime.INIT);
+
+        Stopwatch.finish("InitEvent");
+    }
+
+    @EventHandler
+    public void onPostInit(FMLPostInitializationEvent e) {
+        Stopwatch.time("PostInitEvent");
+
+        HeeIMC.runPostInit();
+        KnowledgeRegistrations.initialize();
+        OrbAcquirableItems.initialize(true);
+        OrbSpawnableMobs.initialize();
+        ModIntegrationManager.integrateMods();
+        DimensionOverride.postInit();
+
+        UnitTester.trigger(RunTime.POSTINIT);
+
+        Stopwatch.finish("PostInitEvent");
+    }
+
+    @EventHandler
+    public void onLoadComplete(FMLLoadCompleteEvent e) {
+        Stopwatch.time("LoadCompleteEvent");
+
+        try {
+            DimensionOverride.verifyIntegrity();
+            HeeIMC.runLoadComplete();
+
+            UnitTester.trigger(RunTime.LOADCOMPLETE);
+            UnitTester.finalizeEventTests();
+        } catch (Throwable t) {
+            FMLCommonHandler.instance().raiseException(t, "Critical error handling post-load data.", true);
+        }
+
+        Stopwatch.finish("LoadCompleteEvent");
+    }
+
+    @EventHandler
+    public void onServerStarting(FMLServerStartingEvent e) {
+        e.registerServerCommand(new HeeAdminCommand());
+        e.registerServerCommand(new HeeBaconCommand());
+        e.registerServerCommand(new HeeDebugCommand());
+    }
+
+    @EventHandler
+    public void onIMC(IMCEvent e) {
+        for (IMCMessage message : e.getMessages()) HeeIMC.acceptIMC(message);
+    }
 }

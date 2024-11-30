@@ -1,15 +1,18 @@
 package chylex.hee.block;
+
 import java.util.Random;
+
 import net.minecraft.item.Item;
 
-public class BlockEndiumOre extends BlockAbstractOre{
-	@Override
-	public Item getItemDropped(int meta, Random rand, int fortune){
-		return Item.getItemFromBlock(this);
-	}
-	
-	@Override
-	protected int getCausatumLevel(){
-		return 12;
-	}
+public class BlockEndiumOre extends BlockAbstractOre {
+
+    @Override
+    public Item getItemDropped(int meta, Random rand, int fortune) {
+        return Item.getItemFromBlock(this);
+    }
+
+    @Override
+    protected int getCausatumLevel() {
+        return 12;
+    }
 }
